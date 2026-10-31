@@ -65,7 +65,7 @@ export default function Sidebar({ activeTab, onSelectTab, isOpen, onClose }) {
                   }}
                   className={`w-full flex items-center space-x-3 px-3.5 py-2.5 rounded-lg text-sm transition-colors text-left ${
                     isActive
-                      ? 'bg-forest-800 text-white font-medium border-l-3 border-mint-400 shadow-xs'
+                      ? 'bg-forest-800 text-white font-medium border-l-[3px] border-mint-400 shadow-xs'
                       : 'text-forest-100/80 hover:text-white hover:bg-forest-800/60 font-normal'
                   }`}
                 >

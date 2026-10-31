@@ -2,6 +2,13 @@
 import Sidebar from './components/Sidebar';
 import Header from './components/Header';
 import Overview from './views/Overview';
+import Customers from './views/Customers';
+import Plans from './views/Plans';
+import Subscriptions from './views/Subscriptions';
+import Invoices from './views/Invoices';
+import Payments from './views/Payments';
+import Licenses from './views/Licenses';
+import Reports from './views/Reports';
 import PlaceholderView from './views/PlaceholderView';
 import { NAV_ITEMS } from './constants/navigation';
 import { checkBackendHealth } from './api/client';
@@ -56,11 +63,28 @@ export default function App() {
 
         {/* Dynamic View Body */}
         <main className="flex-1 p-4 sm:p-6 lg:p-8 max-w-7xl w-full mx-auto">
-          {activeTab === 'overview' ? (
-            <Overview globalSearch={searchQuery} />
-          ) : (
-            <PlaceholderView sectionId={activeTab} />
+          {activeTab === 'overview' && <Overview globalSearch={searchQuery} />}
+          {activeTab === 'customers' && (
+            <Customers globalSearch={searchQuery} backendStatus={backendStatus} />
           )}
+          {activeTab === 'plans' && <Plans globalSearch={searchQuery} />}
+          {activeTab === 'subscriptions' && <Subscriptions globalSearch={searchQuery} />}
+          {activeTab === 'invoices' && <Invoices globalSearch={searchQuery} />}
+          {activeTab === 'payments' && <Payments globalSearch={searchQuery} />}
+          {activeTab === 'licenses' && <Licenses globalSearch={searchQuery} />}
+          {activeTab === 'reports' && <Reports />}
+
+          {/* Fallback for unrecognized tabs */}
+          {![
+            'overview',
+            'customers',
+            'plans',
+            'subscriptions',
+            'invoices',
+            'payments',
+            'licenses',
+            'reports',
+          ].includes(activeTab) && <PlaceholderView sectionId={activeTab} />}
         </main>
 
         {/* Professional Minimal Footer */}
