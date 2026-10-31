@@ -5,8 +5,8 @@ import {
   Bell,
   CheckCircle2,
   AlertTriangle,
+  Info,
   X,
-  Info
 } from 'lucide-react';
 
 export default function Header({
@@ -16,23 +16,23 @@ export default function Header({
   searchQuery,
   onSearchChange,
 }) {
-  const [showNotifications, setShowNotifications] = useState(false);
   const [showStatusModal, setShowStatusModal] = useState(false);
+  const [showNotifications, setShowNotifications] = useState(false);
 
   return (
-    <header className="sticky top-0 z-30 bg-surface border-b border-slate-200 px-4 sm:px-6 py-3.5">
-      <div className="flex items-center justify-between gap-4">
-        {/* Left: Mobile hamburger & Active Page Title */}
-        <div className="flex items-center space-x-3 min-w-0">
+    <header className="sticky top-0 z-30 bg-surface/90 backdrop-blur-md border-b border-slate-200/80 px-4 sm:px-6 lg:px-8 py-3.5">
+      <div className="flex items-center justify-between gap-3 sm:gap-4 max-w-7xl mx-auto">
+        {/* Left: Mobile Toggle & Page Title */}
+        <div className="flex items-center space-x-2 sm:space-x-3 min-w-0">
           <button
             onClick={onOpenSidebar}
-            className="p-2 -ml-2 rounded-lg text-slate-600 hover:text-slate-900 hover:bg-slate-100 lg:hidden transition"
+            className="p-1.5 sm:p-2 -ml-1 sm:-ml-2 rounded-lg text-slate-600 hover:text-slate-900 hover:bg-slate-100 lg:hidden transition shrink-0"
             aria-label="Open sidebar"
           >
             <Menu className="w-5 h-5" />
           </button>
-          <div>
-            <h1 className="text-xl font-bold text-slate-900 tracking-tight truncate">
+          <div className="min-w-0">
+            <h1 className="text-lg sm:text-xl font-bold text-slate-900 tracking-tight truncate max-w-[180px] sm:max-w-xs md:max-w-sm lg:max-w-none">
               {pageTitle}
             </h1>
           </div>
@@ -62,11 +62,11 @@ export default function Header({
         </div>
 
         {/* Right: Backend Connection Status, Notifications & Profile */}
-        <div className="flex items-center space-x-3 shrink-0">
-          {/* Backend Connection Indicator with clear Offline / Online distinction */}
+        <div className="flex items-center space-x-2 sm:space-x-3 shrink-0">
+          {/* Backend Connection Indicator with responsive label */}
           <button
             onClick={() => setShowStatusModal(!showStatusModal)}
-            className={`flex items-center space-x-2 px-2.5 py-1 rounded-full text-xs border transition cursor-pointer ${
+            className={`flex items-center space-x-1.5 sm:space-x-2 px-2.5 py-1 rounded-full text-xs border transition cursor-pointer shrink-0 ${
               backendStatus?.connected
                 ? 'bg-mint-50 border-mint-200 text-mint-800'
                 : 'bg-amber-50/80 border-amber-200 text-amber-800 hover:bg-amber-100/70'
@@ -75,21 +75,22 @@ export default function Header({
           >
             {backendStatus?.connected ? (
               <>
-                <CheckCircle2 className="w-3.5 h-3.5 text-mint-600" />
+                <CheckCircle2 className="w-3.5 h-3.5 text-mint-600 shrink-0" />
                 <span className="font-medium hidden sm:inline">Backend: Connected</span>
-                <span className="font-medium sm:hidden">Online</span>
+                <span className="font-medium sm:hidden">Live</span>
               </>
             ) : (
               <>
-                <AlertTriangle className="w-3.5 h-3.5 text-amber-600" />
-                <span className="font-medium hidden sm:inline">Backend: Disconnected (Demo Mode)</span>
+                <AlertTriangle className="w-3.5 h-3.5 text-amber-600 shrink-0" />
+                <span className="font-medium hidden xl:inline">Backend: Disconnected (Demo Mode)</span>
+                <span className="font-medium hidden sm:inline xl:hidden">Demo Mode</span>
                 <span className="font-medium sm:hidden">Demo</span>
               </>
             )}
           </button>
 
           {/* Notifications Toggle */}
-          <div className="relative">
+          <div className="relative shrink-0">
             <button
               onClick={() => setShowNotifications(!showNotifications)}
               className="relative p-2 rounded-lg text-slate-500 hover:text-slate-700 hover:bg-slate-100 transition"
@@ -130,8 +131,8 @@ export default function Header({
           </div>
 
           {/* User Profile */}
-          <div className="flex items-center space-x-3 pl-2 border-l border-slate-200">
-            <div className="w-8 h-8 rounded-full bg-forest-900 text-mint-300 font-semibold text-xs flex items-center justify-center border border-forest-800">
+          <div className="flex items-center space-x-2 sm:space-x-3 pl-2 border-l border-slate-200 shrink-0">
+            <div className="w-8 h-8 rounded-full bg-forest-900 text-mint-300 font-semibold text-xs flex items-center justify-center border border-forest-800 shrink-0">
               LL
             </div>
             <div className="hidden xl:block text-left">
@@ -142,9 +143,9 @@ export default function Header({
         </div>
       </div>
 
-      {/* Backend Status Explanation Modal / Popover */}
+      {/* Backend Status Explanation Modal */}
       {showStatusModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/40 backdrop-blur-2xs">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/40 backdrop-blur-2xs overflow-y-auto">
           <div className="bg-surface rounded-xl border border-slate-200 p-5 max-w-md w-full shadow-xl">
             <div className="flex items-center justify-between pb-3 border-b border-slate-100">
               <div className="flex items-center space-x-2">

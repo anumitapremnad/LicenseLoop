@@ -7,16 +7,16 @@ import {
   TrendingUp,
   Clock,
   Sparkles,
-  Info,
   Activity,
-  CheckCircle2
+  CheckCircle2,
 } from 'lucide-react';
 import {
   OVERVIEW_METRICS,
   RECENT_SUBSCRIPTIONS,
   COST_SAVINGS_OPPORTUNITIES,
-  RECENT_ACTIVITY
+  RECENT_ACTIVITY,
 } from '../mock/demoData';
+import DemoBanner from '../components/DemoBanner';
 
 export default function Overview({ globalSearch = '' }) {
   const [statusFilter, setStatusFilter] = useState('ALL');
@@ -27,7 +27,7 @@ export default function Overview({ globalSearch = '' }) {
       statusFilter === 'ALL' ||
       sub.status.toLowerCase() === statusFilter.toLowerCase() ||
       sub.status.toLowerCase().replace(/\s+/g, '-') === statusFilter.toLowerCase();
-    
+
     const query = globalSearch.toLowerCase().trim();
     const matchesSearch =
       !query ||
@@ -41,34 +41,13 @@ export default function Overview({ globalSearch = '' }) {
 
   return (
     <div className="space-y-6">
-      {/* Demo Data Disclaimer Banner */}
-      <div className="bg-amber-50/70 border border-amber-200/80 rounded-xl p-3.5 flex items-start sm:items-center justify-between gap-3 text-xs text-amber-900">
-        <div className="flex items-center space-x-2">
-          <Info className="w-4 h-4 text-amber-700 shrink-0" />
-          <span>
-            <strong>Demo Data Presentation:</strong> The metrics and records below represent a curated enterprise dataset for demonstration while the FastAPI backend service is in standby.
-          </span>
-        </div>
-        <span className="shrink-0 px-2 py-0.5 rounded bg-amber-100 text-amber-800 font-semibold text-[10px] uppercase tracking-wide">
-          Simulated Data
-        </span>
-      </div>
+      {/* Consistent Demo Data Disclaimer Banner */}
+      <DemoBanner
+        title="Demo Data Presentation"
+        description="The metrics and records below represent a curated enterprise dataset for demonstration while the FastAPI backend service is in standby."
+      />
 
-      {/* Top Welcome & Summary Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-1">
-        <div>
-          <h2 className="text-2xl font-bold text-slate-900 tracking-tight">System Overview</h2>
-          <p className="text-sm text-slate-500 mt-0.5">
-            Real-time subscription performance, active license allocation, and cost optimization insights.
-          </p>
-        </div>
-        <div className="flex items-center space-x-2 text-xs text-slate-500 bg-white border border-slate-200 px-3 py-1.5 rounded-lg shadow-2xs">
-          <Clock className="w-3.5 h-3.5 text-forest-700" />
-          <span>Last synchronized: Today, 11:30 AM</span>
-        </div>
-      </div>
-
-      {/* KPI Cards Grid */}
+      {/* Top Row: KPI Statistics Grid */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         {/* Card 1: Active Subscriptions */}
         <div className="bg-surface rounded-xl border border-slate-200 p-5 shadow-2xs hover:border-slate-300 transition">
@@ -94,11 +73,11 @@ export default function Overview({ globalSearch = '' }) {
           </p>
         </div>
 
-        {/* Card 2: License Utilization */}
+        {/* Card 2: Monitored Licenses */}
         <div className="bg-surface rounded-xl border border-slate-200 p-5 shadow-2xs hover:border-slate-300 transition">
           <div className="flex items-center justify-between">
             <span className="text-xs font-semibold text-slate-500 uppercase tracking-wider">
-              License Utilization
+              Monitored Licenses
             </span>
             <div className="w-9 h-9 rounded-lg bg-forest-900/10 text-forest-800 flex items-center justify-center">
               <KeyRound className="w-4 h-4 text-forest-800" />
@@ -106,16 +85,15 @@ export default function Overview({ globalSearch = '' }) {
           </div>
           <div className="mt-3 flex items-baseline space-x-2">
             <span className="text-2xl font-bold text-slate-900">
-              {OVERVIEW_METRICS.licenseUtilization.percentage}%
+              {OVERVIEW_METRICS.licenseUtilization.usedSeats}
             </span>
-            <span className="text-xs text-slate-500 font-medium">
-              ({OVERVIEW_METRICS.licenseUtilization.usedSeats}/{OVERVIEW_METRICS.licenseUtilization.totalSeats} seats)
+            <span className="text-xs text-slate-500">
+              / {OVERVIEW_METRICS.licenseUtilization.totalSeats} seats
             </span>
           </div>
-          {/* Progress bar */}
-          <div className="w-full bg-slate-100 rounded-full h-1.5 mt-2 overflow-hidden">
+          <div className="mt-2 w-full bg-slate-100 rounded-full h-1.5 overflow-hidden">
             <div
-              className="bg-mint-500 h-1.5 rounded-full transition-all"
+              className="bg-forest-800 h-1.5 rounded-full"
               style={{ width: `${OVERVIEW_METRICS.licenseUtilization.percentage}%` }}
             />
           </div>
@@ -151,16 +129,17 @@ export default function Overview({ globalSearch = '' }) {
             <span className="text-xs font-semibold text-slate-500 uppercase tracking-wider">
               Potential Cost Savings
             </span>
-            <div className="w-9 h-9 rounded-lg bg-amber-50 text-amber-600 flex items-center justify-center">
-              <TrendingDown className="w-4 h-4 text-amber-600" />
+            <div className="w-9 h-9 rounded-lg bg-mint-100 text-mint-600 flex items-center justify-center">
+              <Sparkles className="w-4 h-4 text-mint-600" />
             </div>
           </div>
           <div className="mt-3 flex items-baseline space-x-2">
             <span className="text-2xl font-bold text-slate-900">
               {OVERVIEW_METRICS.identifiedSavings.value}
             </span>
-            <span className="text-xs font-medium text-amber-600 bg-amber-50 px-1.5 py-0.5 rounded">
-              {OVERVIEW_METRICS.identifiedSavings.count} idle seats
+            <span className="inline-flex items-center text-xs font-semibold text-mint-600 bg-mint-50 px-1.5 py-0.5 rounded">
+              <TrendingDown className="w-3 h-3 mr-0.5" />
+              {OVERVIEW_METRICS.identifiedSavings.count} flags
             </span>
           </div>
           <p className="text-xs text-slate-500 mt-1">
@@ -227,17 +206,17 @@ export default function Overview({ globalSearch = '' }) {
             </div>
           </div>
 
-          {/* Table Container */}
+          {/* Table Container with whitespace-nowrap preventing awkward column breaks */}
           <div className="overflow-x-auto flex-1">
             <table className="w-full text-left text-sm border-collapse">
               <thead>
                 <tr className="bg-canvas/80 text-slate-500 text-[11px] font-semibold uppercase tracking-wider border-b border-slate-200">
-                  <th className="py-3 px-4">Subscription</th>
-                  <th className="py-3 px-4">Customer</th>
-                  <th className="py-3 px-4">Seats Allocated</th>
-                  <th className="py-3 px-4">Monthly Cost</th>
-                  <th className="py-3 px-4">Status</th>
-                  <th className="py-3 px-4">Renewal</th>
+                  <th className="py-3 px-4 whitespace-nowrap">Subscription</th>
+                  <th className="py-3 px-4 whitespace-nowrap">Customer</th>
+                  <th className="py-3 px-4 whitespace-nowrap">Seats Allocated</th>
+                  <th className="py-3 px-4 whitespace-nowrap">Monthly Cost</th>
+                  <th className="py-3 px-4 whitespace-nowrap">Status</th>
+                  <th className="py-3 px-4 whitespace-nowrap">Renewal</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-slate-100">
@@ -258,14 +237,14 @@ export default function Overview({ globalSearch = '' }) {
 
                     return (
                       <tr key={sub.id} className="hover:bg-slate-50/70 transition">
-                        <td className="py-3.5 px-4">
+                        <td className="py-3.5 px-4 whitespace-nowrap">
                           <div className="font-semibold text-slate-900">{sub.product}</div>
                           <div className="text-[11px] text-slate-400">{sub.category} &bull; {sub.plan}</div>
                         </td>
-                        <td className="py-3.5 px-4 text-slate-700 font-medium">
+                        <td className="py-3.5 px-4 text-slate-700 font-medium whitespace-nowrap">
                           {sub.customer}
                         </td>
-                        <td className="py-3.5 px-4">
+                        <td className="py-3.5 px-4 whitespace-nowrap">
                           <div className="text-slate-900 font-medium">
                             {sub.seats.used} / {sub.seats.total}
                           </div>
@@ -278,20 +257,20 @@ export default function Overview({ globalSearch = '' }) {
                             />
                           </div>
                         </td>
-                        <td className="py-3.5 px-4 font-semibold text-slate-900">
+                        <td className="py-3.5 px-4 font-semibold text-slate-900 whitespace-nowrap">
                           {sub.monthlyAmount}
                           <span className="text-[10px] font-normal text-slate-400 block">
                             {sub.billingCycle}
                           </span>
                         </td>
-                        <td className="py-3.5 px-4">
+                        <td className="py-3.5 px-4 whitespace-nowrap">
                           <span
                             className={`inline-flex items-center px-2 py-0.5 rounded text-xs font-medium border ${badgeClass}`}
                           >
                             {sub.status}
                           </span>
                         </td>
-                        <td className="py-3.5 px-4 text-xs text-slate-500 whitespace-nowrap">
+                        <td className="py-3.5 px-4 text-xs text-slate-500 whitespace-nowrap font-mono">
                           {sub.renewalDate}
                         </td>
                       </tr>
@@ -305,7 +284,7 @@ export default function Overview({ globalSearch = '' }) {
           {/* Table Footer */}
           <div className="p-3 bg-canvas/40 border-t border-slate-200 text-xs text-slate-500 flex items-center justify-between">
             <span>Showing {filteredSubscriptions.length} of {RECENT_SUBSCRIPTIONS.length} subscriptions</span>
-            <span className="text-forest-800 font-medium">Verified Demo Dataset</span>
+            <span className="text-forest-800 font-medium text-[11px]">Verified Demo Dataset</span>
           </div>
         </div>
 
@@ -328,59 +307,51 @@ export default function Overview({ globalSearch = '' }) {
                     <CheckCircle2 className="w-3.5 h-3.5 text-forest-800" />
                   </div>
                   <div className="flex-1 min-w-0">
-                    <div className="font-semibold text-slate-900 leading-snug">{act.title}</div>
-                    <p className="text-[11px] text-slate-500 leading-tight mt-0.5 truncate">{act.detail}</p>
-                    <div className="flex items-center space-x-2 text-[10px] text-slate-400 mt-1">
-                      <span>{act.customer}</span>
-                      <span>&bull;</span>
-                      <span>{act.timestamp}</span>
-                    </div>
+                    <p className="font-semibold text-slate-800 leading-snug">{act.title}</p>
+                    <p className="text-slate-500 text-[11px] truncate mt-0.5">{act.detail}</p>
                   </div>
+                  <span className="text-[10px] text-slate-400 whitespace-nowrap font-mono shrink-0">
+                    {act.timestamp}
+                  </span>
                 </div>
               ))}
             </div>
           </div>
 
-          {/* Cost Optimization & Recommendations Panel */}
+          {/* Cost Optimization Highlights */}
           <div className="bg-surface rounded-xl border border-slate-200 p-5 shadow-2xs">
             <div className="flex items-center space-x-2 text-forest-900 font-bold text-base mb-1">
               <Sparkles className="w-4 h-4 text-mint-500" />
-              <h3>Optimization Opportunities</h3>
+              <h3>Cost Optimization</h3>
             </div>
             <p className="text-xs text-slate-500 mb-4">
-              Actionable license adjustments to eliminate shelfware and decrease run-rate spend.
+              AI-driven insights on inactive seats and unused enterprise tiers.
             </p>
 
             <div className="space-y-3">
-              {COST_SAVINGS_OPPORTUNITIES.map((opt) => (
+              {COST_SAVINGS_OPPORTUNITIES.map((opp) => (
                 <div
-                  key={opt.id}
-                  className="p-3.5 rounded-lg border border-slate-200 bg-canvas/40 hover:bg-canvas transition"
+                  key={opp.id}
+                  className="p-3 rounded-lg border border-slate-100 bg-canvas/40 hover:bg-canvas transition"
                 >
-                  <div className="flex items-start justify-between gap-2 mb-1">
-                    <span className="font-semibold text-xs text-slate-900 leading-snug">
-                      {opt.title}
-                    </span>
-                    <span className="text-xs font-bold text-mint-600 shrink-0">
-                      {opt.potentialSavings}
+                  <div className="flex items-center justify-between">
+                    <span className="font-bold text-slate-800 text-xs">{opp.product}</span>
+                    <span className="text-xs font-bold text-mint-700 bg-mint-50 px-2 py-0.5 rounded">
+                      {opp.potentialSavings}
                     </span>
                   </div>
-                  <p className="text-[11px] text-slate-600 leading-relaxed mb-2">
-                    {opt.recommendation}
-                  </p>
-                  <div className="flex items-center justify-between text-[10px] text-slate-400">
-                    <span>Target: {opt.customer}</span>
-                    <span className="font-medium text-slate-700 uppercase">
-                      {opt.impact} Priority
+                  <p className="text-slate-500 text-[11px] mt-1">{opp.issue}</p>
+                  <div className="mt-2.5 flex items-center justify-between text-[11px]">
+                    <span className="text-slate-400 flex items-center space-x-1">
+                      <Clock className="w-3 h-3" />
+                      <span>{opp.urgency}</span>
+                    </span>
+                    <span className="font-semibold text-forest-800 hover:text-forest-900 cursor-pointer">
+                      {opp.action} &rarr;
                     </span>
                   </div>
                 </div>
               ))}
-            </div>
-
-            <div className="mt-4 pt-3 border-t border-slate-100 flex items-center justify-between">
-              <span className="text-xs text-slate-500">Total potential recovery:</span>
-              <span className="text-sm font-bold text-slate-900">$1,780/mo</span>
             </div>
           </div>
         </div>
