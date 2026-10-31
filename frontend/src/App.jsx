@@ -1,101 +1,80 @@
-﻿import React from 'react';
-import { 
-  Repeat, 
-  Layers, 
-  ShieldCheck, 
-  TrendingDown, 
-  ArrowRight,
-  Server
-} from 'lucide-react';
+﻿import React, { useState, useEffect } from 'react';
+import Sidebar from './components/Sidebar';
+import Header from './components/Header';
+import Overview from './views/Overview';
+import PlaceholderView from './views/PlaceholderView';
+import { NAV_ITEMS } from './constants/navigation';
+import { checkBackendHealth } from './api/client';
 
-function App() {
+export default function App() {
+  const [activeTab, setActiveTab] = useState('overview');
+  const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [searchQuery, setSearchQuery] = useState('');
+  const [backendStatus, setBackendStatus] = useState({
+    connected: false,
+    status: 'Checking...',
+    url: 'http://localhost:8000',
+  });
+
+  // Probe FastAPI backend connection on mount
+  useEffect(() => {
+    let isMounted = true;
+    checkBackendHealth().then((status) => {
+      if (isMounted) {
+        setBackendStatus(status);
+      }
+    });
+    return () => {
+      isMounted = false;
+    };
+  }, []);
+
+  // Find active navigation item title
+  const activeNavItem = NAV_ITEMS.find((item) => item.id === activeTab);
+  const currentTitle = activeNavItem ? activeNavItem.label : 'Overview';
+
   return (
-    <div className="min-h-screen bg-canvas text-slate-800 flex flex-col justify-between">
-      {/* Top Navigation Bar */}
-      <header className="bg-surface border-b border-slate-200 px-6 py-4">
-        <div className="max-w-6xl mx-auto flex items-center justify-between">
-          <div className="flex items-center space-x-3">
-            {/* Loop-inspired brand mark */}
-            <div className="w-10 h-10 rounded-xl bg-forest-900 flex items-center justify-center text-mint-400 shadow-sm">
-              <Repeat className="w-5 h-5 animate-pulse" />
-            </div>
-            <div>
-              <span className="text-xl font-bold tracking-tight text-forest-900">LicenseLoop</span>
-              <span className="ml-2 inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-mint-50 text-mint-600 border border-mint-200">
-                Frontend v0.1
-              </span>
-            </div>
-          </div>
-          <div className="flex items-center space-x-2 text-xs text-slate-500">
-            <span className="w-2 h-2 rounded-full bg-mint-500 inline-block"></span>
-            <span>Vite + React + Tailwind Ready</span>
-          </div>
-        </div>
-      </header>
+    <div className="min-h-screen bg-canvas text-slate-800 flex flex-col font-sans">
+      {/* Sidebar Navigation */}
+      <Sidebar
+        activeTab={activeTab}
+        onSelectTab={setActiveTab}
+        isOpen={sidebarOpen}
+        onClose={() => setSidebarOpen(false)}
+      />
 
-      {/* Main Content Hero Card */}
-      <main className="flex-1 max-w-4xl w-full mx-auto px-6 py-12 flex flex-col justify-center">
-        <div className="bg-surface rounded-2xl border border-slate-200 shadow-sm p-8 md:p-10">
-          <div className="flex items-center space-x-2 text-forest-700 text-sm font-semibold tracking-wide uppercase mb-3">
-            <Layers className="w-4 h-4 text-mint-500" />
-            <span>Smart Subscription Management System</span>
-          </div>
-          
-          <h1 className="text-3xl md:text-4xl font-extrabold text-forest-900 tracking-tight leading-tight mb-3">
-            Manage subscriptions.<br />
-            Optimize licenses.<br />
-            <span className="text-mint-600">Reduce costs.</span>
-          </h1>
+      {/* Main Content Area (offset by sidebar width on desktop) */}
+      <div className="lg:pl-72 flex flex-col flex-1 min-w-0">
+        {/* Top Header */}
+        <Header
+          pageTitle={currentTitle}
+          onOpenSidebar={() => setSidebarOpen(true)}
+          backendStatus={backendStatus}
+          searchQuery={searchQuery}
+          onSearchChange={setSearchQuery}
+        />
 
-          <p className="text-slate-600 text-base md:text-lg mb-8 max-w-2xl leading-relaxed">
-            Frontend foundation initialized for the 6-hour hackathon. The architecture is ready to build the dashboard views and connect to Neha's FastAPI backend.
-          </p>
+        {/* Dynamic View Body */}
+        <main className="flex-1 p-4 sm:p-6 lg:p-8 max-w-7xl w-full mx-auto">
+          {activeTab === 'overview' ? (
+            <Overview globalSearch={searchQuery} />
+          ) : (
+            <PlaceholderView sectionId={activeTab} />
+          )}
+        </main>
 
-          {/* Core Feature Pillars / Status */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
-            <div className="p-4 rounded-xl border border-slate-200 bg-canvas/60">
-              <div className="w-8 h-8 rounded-lg bg-forest-900/10 text-forest-800 flex items-center justify-center mb-3">
-                <ShieldCheck className="w-4 h-4 text-forest-800" />
-              </div>
-              <h3 className="font-semibold text-slate-800 text-sm mb-1">Tailwind Design Tokens</h3>
-              <p className="text-xs text-slate-500">Dark forest green, mint green, white, and off-white configured.</p>
-            </div>
-
-            <div className="p-4 rounded-xl border border-slate-200 bg-canvas/60">
-              <div className="w-8 h-8 rounded-lg bg-mint-100 text-mint-600 flex items-center justify-center mb-3">
-                <TrendingDown className="w-4 h-4 text-mint-600" />
-              </div>
-              <h3 className="font-semibold text-slate-800 text-sm mb-1">Lucide Icons Ready</h3>
-              <p className="text-xs text-slate-500">Vector icon library installed for clean, readable dashboard elements.</p>
-            </div>
-
-            <div className="p-4 rounded-xl border border-slate-200 bg-canvas/60">
-              <div className="w-8 h-8 rounded-lg bg-slate-100 text-slate-700 flex items-center justify-center mb-3">
-                <Server className="w-4 h-4 text-slate-700" />
-              </div>
-              <h3 className="font-semibold text-slate-800 text-sm mb-1">FastAPI Client Layer</h3>
-              <p className="text-xs text-slate-500">Dedicated API bridge module prepared for seamless integration.</p>
-            </div>
-          </div>
-
-          <div className="flex flex-col sm:flex-row items-center justify-between pt-6 border-t border-slate-100 gap-4">
-            <span className="text-xs text-slate-500">
-              Branch: <code className="bg-slate-100 px-2 py-0.5 rounded text-forest-800 font-mono">frontend-anu</code>
+        {/* Professional Minimal Footer */}
+        <footer className="border-t border-slate-200/80 bg-surface/60 py-4 px-6 text-center text-xs text-slate-400">
+          <div className="flex flex-col sm:flex-row items-center justify-between gap-2 max-w-7xl mx-auto">
+            <span className="font-medium text-slate-500">
+              LicenseLoop &mdash; Enterprise Subscription & License Management
             </span>
-            <div className="inline-flex items-center space-x-1.5 text-xs font-medium text-forest-800 bg-forest-900/5 px-3 py-1.5 rounded-lg border border-forest-900/10">
-              <span>Ready for dashboard layout & components</span>
-              <ArrowRight className="w-3.5 h-3.5" />
-            </div>
+            <span className="text-slate-400">
+              Manage subscriptions. Optimize licenses. Reduce costs.
+            </span>
           </div>
-        </div>
-      </main>
-
-      {/* Minimal Footer */}
-      <footer className="text-center py-5 text-xs text-slate-500 border-t border-slate-200 bg-surface">
-        LicenseLoop &copy; 2026 &mdash; Built for Hackathon
-      </footer>
+        </footer>
+      </div>
     </div>
   );
 }
-
-export default App;
